@@ -1,26 +1,56 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-
-const dialogVisible = ref<boolean>(false)
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <el-button @click="dialogVisible = true">open dialog</el-button>
-  <el-dialog v-model="dialogVisible" class="custom-class" title="Tips">
-    <span>It's a draggable Dialog</span>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false">
-          Confirm
-        </el-button>
-      </span>
-    </template>
-  </el-dialog>
-</template>
+  <div class="wrapper">
+    <nav>
+      <RouterLink to="/"><button>Home</button></RouterLink>
+      <RouterLink to="/about"><button>About</button></RouterLink>
+    </nav>
+  </div>
+  <router-view v-slot="{ Component, route }">
+    <transition name="main" mode="out-in" appear>
+      <keep-alive include="about-view">
+        <component :is="Component" :key="route.fullPath" />
+      </keep-alive>
+    </transition>
+  </router-view>
 
+</template>
 <style scoped>
-.custom-class{
-  background-color: #ff6700;
+.wrapper {
+  position: sticky;
+  top: 0;
+  text-align: center;
+  background-color: #ddd;
+
+}
+
+.wrapper nav {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 主内容区动画 */
+.main-enter-active {
+  transition: 0.2s;
+}
+
+.main-leave-active {
+  transition: 0.15s;
+}
+
+.main-enter-from {
+  opacity: 0;
+  margin-left: -10px;
+}
+
+.main-leave-to {
+  opacity: 0;
+  margin-left: 10px;
 }
 </style>
